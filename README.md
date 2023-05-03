@@ -1,10 +1,13 @@
-# Welcome to the most paranoid Terraria server
+# Boundary sandbox
+
+Minimal setup for testing out HCP Boundary multi-hop feature with SSH credentials injection
 
 
 ## Pre-req
 - Terraform
-- aws account
-- running HCP Boundary cluster
+- AWS account with CLI access
+    - configure AWS profile locally
+- running [HCP Boundary cluster](https://portal.cloud.hashicorp.com/services/boundary/)
 ## Provisioning 
 
 ### Create TFVARS
@@ -34,3 +37,12 @@ terraform apply -var-file=envs/personal.tfvars
 ```
 
 
+## Connect
+
+Install [Boundary client](https://developer.hashicorp.com/boundary/tutorials/oss-getting-started/oss-getting-started-desktop-app)
+
+Login to your Boundary cluster in the client
+
+Select "my first ssh target" and click `Connect`
+
+run `ssh localhost -p <output-port>`
