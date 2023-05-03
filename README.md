@@ -21,7 +21,7 @@ hcp_boundary_username    = "<username>"
 hcp_boundary_password    = "<password>"
 hcp_boundary_cluster_id  = "<cluster>"
 
-aws_profile = "personal"
+aws_profile = "<aws-profile-name>"
 aws_region = "us-west-2"
 ```
 
@@ -31,8 +31,8 @@ aws_region = "us-west-2"
 
 
 ```bash
-terraform plan -var-file=envs/personal.tfvars
-terraform apply -var-file=envs/personal.tfvars
+terraform plan -var-file=envs/dev.tfvars
+terraform apply -var-file=envs/dev.tfvars
 # Follow the prompt
 ```
 
