@@ -10,6 +10,16 @@ Minimal setup for testing out HCP Boundary multi-hop feature with SSH credential
 - running [HCP Boundary cluster](https://portal.cloud.hashicorp.com/services/boundary/)
 ## Provisioning 
 
+Provisioning AWS resources for the sandbox
+
+1. VPC with private and public subnet
+2. EC2 instance for running `boundary-worker` inside the private subnet
+3. EC2 instance acting as a private ssh target
+
+This way, both `boundary-worker` and `SSH target` are not reachable from the public internet (no public IP)
+
+![Diagram](./img/network.drawio.png)
+
 ### Create TFVARS
 
 Create tfvars file to hold sensitive information
