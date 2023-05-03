@@ -23,6 +23,7 @@ hcp_boundary_cluster_id  = "<cluster>"
 
 aws_profile = "<aws-profile-name>"
 aws_region = "us-west-2"
+availability_zones = ["us-west-2a", "us-west-2b"]
 ```
 
 ### Provision resource
