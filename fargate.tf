@@ -40,13 +40,6 @@ resource "aws_ecs_task_definition" "main" {
       name         = "boundary-worker"
       image        = "${aws_ecr_repository.main.repository_url}:latest"
       essential    = true
-      portMappings = [
-        {
-          protocol      = "tcp"
-          containerPort = 9200
-          hostPort      = 9200
-        }
-      ]
     }
   ])
 }
