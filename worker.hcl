@@ -1,4 +1,4 @@
-name = "private-worker"
+name = "fargate-worker"
 disable_mlock = true
 listener "tcp" {
   purpose = "proxy"

@@ -5,7 +5,7 @@ WORKDIR /boundary
 RUN apk update && \
     apk add curl unzip
 
-RUN curl -o boundary-worker.zip https://releases.hashicorp.com/boundary-worker/0.12.2+hcp/boundary-worker_0.12.2+hcp_linux_amd64.zip && \
+RUN curl -o boundary-worker.zip https://releases.hashicorp.com/boundary-worker/0.12.3+hcp/boundary-worker_0.12.3+hcp_linux_amd64.zip && \
     unzip boundary-worker.zip && \
     chmod +x boundary-worker
 
