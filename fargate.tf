@@ -100,3 +100,4 @@ resource "aws_ecs_service" "boundary_worker" {
     subnets = [for s in aws_subnet.private : s.id]
   }
 }
+
