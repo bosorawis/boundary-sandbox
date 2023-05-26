@@ -5,7 +5,7 @@ listener "tcp" {
   address = "0.0.0.0:9200"
 }
 
-hcp_boundary_cluster_id = "472bfa07-4d2d-4bd9-8e96-fe429c9f7040"
+hcp_boundary_cluster_id = "d27adf55-1bb5-4752-a419-ae2b03efbf18"
 
 worker {
   auth_storage_path = "/boundary/auth/worker1"

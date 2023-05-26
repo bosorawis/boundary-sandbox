@@ -4,15 +4,9 @@ resource "aws_instance" "ssh-target" {
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   subnet_id            = aws_subnet.private[1].id
   key_name             = aws_key_pair.generated_key.key_name
-  tags = {
+  tags                 = {
     Name = "ssh-target"
   }
-}
-
-locals {
-  boundary_version           = var.boundary_version
-  cluster_id                 = var.hcp_boundary_cluster_id
-  controller_generated_token = boundary_worker.byow_worker.controller_generated_activation_token
 }
 
 resource "tls_private_key" "ssh_key" {

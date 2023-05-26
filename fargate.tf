@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "main" {
-  name                 = "boundar-worker"
+  name                 = "boundary-worker"
   image_tag_mutability = "MUTABLE"
 }
 
@@ -27,3 +27,27 @@ resource "aws_ecr_lifecycle_policy" "main" {
 resource "aws_ecs_cluster" "boundary-worker-clusters" {
   name = "boundary-workers-cluster"
 }
+
+
+resource "aws_ecs_task_definition" "main" {
+  network_mode             = "awsvpc"
+  family                   = "service"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = 256
+  memory                   = 512
+  container_definitions    = jsonencode([
+    {
+      name         = "boundary-worker"
+      image        = "${aws_ecr_repository.main.repository_url}:latest"
+      essential    = true
+      portMappings = [
+        {
+          protocol      = "tcp"
+          containerPort = 9200
+          hostPort      = 9200
+        }
+      ]
+    }
+  ])
+}
+
