@@ -26,6 +26,7 @@ resource "aws_ecr_lifecycle_policy" "main" {
 
 resource "aws_ecs_cluster" "boundary-worker-clusters" {
   name = "boundary-workers-cluster"
+
 }
 
 resource "aws_iam_role" "fargate_execution_role" {
@@ -43,10 +44,14 @@ EOF
 
 # Create IAM Role Policy Attachment
 resource "aws_iam_role_policy_attachment" "fargate_execution_role" {
-  role       = aws_iam_role.instance_role.name
+  role       = aws_iam_role.fargate_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_cloudwatch_log_group" "fargate_boundary_worker" {
+  name              = "/fargate/service/boundary-workers"
+  retention_in_days = 3
+}
 
 resource "aws_ecs_task_definition" "boundary_worker_task_def" {
   network_mode             = "awsvpc"
@@ -66,15 +71,31 @@ resource "aws_ecs_task_definition" "boundary_worker_task_def" {
           value = "${var.hcp_boundary_cluster_id}"
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options   = {
+          awslogs-group         = aws_cloudwatch_log_group.fargate_boundary_worker.name
+          awslogs-stream-prefix = "ecs"
+          awslogs-region        = "${var.aws_region}"
+        }
+      }
+
     }
   ])
 }
 
+resource "aws_ecs_cluster_capacity_providers" "capacity_provider" {
+  cluster_name       = aws_ecs_cluster.boundary-worker-clusters.name
+  capacity_providers = ["FARGATE"]
+}
+
 resource "aws_ecs_service" "boundary_worker" {
-  name            = "boundary_worker"
-  cluster         = aws_ecs_cluster.boundary-worker-clusters.id
-  task_definition = aws_ecs_task_definition.boundary_worker_task_def.arn
-  desired_count   = 1
+  name                    = "boundary_worker"
+  cluster                 = aws_ecs_cluster.boundary-worker-clusters.id
+  task_definition         = aws_ecs_task_definition.boundary_worker_task_def.arn
+  launch_type             = "FARGATE"
+  enable_ecs_managed_tags = true
+  desired_count           = 1
   network_configuration {
     subnets = [for s in aws_subnet.private : s.id]
   }
