@@ -40,7 +40,7 @@ func convert(e events.CloudwatchLogsData) ([]registrationEvent, error) {
 		return []registrationEvent{}, fmt.Errorf("invalid logstream format. expects 2 '/' but got: %s", e.LogStream)
 	}
 	taskID := splitStream[2]
-	result := []registrationEvent{}
+	var result []registrationEvent
 	for _, event := range e.LogEvents {
 		items := strings.Split(event.Message, ": ")
 		if len(items) != 2 {
