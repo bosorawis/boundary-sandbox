@@ -12,11 +12,6 @@ func HandleRequest(ctx context.Context, event any) (string, error) {
 	return "SUCCEED", nil
 }
 
-type registrationEvent struct {
-	taskID string
-	token  string
-}
-
 func main() {
 	lambda.Start(HandleRequest)
 }

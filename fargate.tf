@@ -101,3 +101,10 @@ resource "aws_ecs_service" "boundary_worker" {
   }
 }
 
+resource "aws_cloudwatch_log_subscription_filter" "worker_auth_subscription" {
+  name            = "worker_auth_watcher_subscription"
+  log_group_name  = aws_cloudwatch_log_group.fargate_boundary_worker.name
+  filter_pattern  = "\"Worker Auth Registration Request: \""
+  destination_arn = aws_lambda_function.worker_auth_watcher_lambda.arn
+}
+

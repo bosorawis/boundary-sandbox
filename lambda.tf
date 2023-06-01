@@ -23,13 +23,15 @@ resource "aws_lambda_function" "worker_auth_watcher_lambda" {
   }
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "worker_auth_subscription" {
-  name            = "worker_auth_watcher_subscription"
-  log_group_name  = aws_cloudwatch_log_group.fargate_boundary_worker.name
-  filter_pattern  = "\"Worker Auth Registration Request: \""
-  destination_arn = aws_lambda_function.worker_auth_watcher_lambda.arn
+resource "aws_dynamodb_table" "dynamo" {
+  name         = "GameScores"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "pk"
+  attribute {
+    name = "pk"
+    type = "S"
+  }
 }
-
 
 resource "aws_iam_role" "lambda_execution_role" {
   assume_role_policy = <<EOF
