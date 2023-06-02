@@ -7,7 +7,6 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/google/uuid"
@@ -42,32 +41,14 @@ func TestStorage_SAGA(t *testing.T) {
 			}
 			err := s.Store(ctx, tt.worker)
 			require.NoErrorf(t, err, "Store() error = %v", err)
-			got, err := client.GetItem(ctx, &dynamodb.GetItemInput{
-				Key: map[string]types.AttributeValue{
-					"pk": &types.AttributeValueMemberS{
-						Value: tt.worker.TaskID,
-					},
-				},
-				TableName: aws.String(table),
-			})
+			got, err := s.GetWorker(ctx, tt.worker.TaskID)
 			require.NoErrorf(t, err, "failed to get item from dynamodb: %v", err)
-			var gotWorker Worker
-			err = attributevalue.UnmarshalMap(got.Item, &gotWorker)
-			require.NoErrorf(t, err, "Couldn't unmarshal query response: %v", err)
-			require.Equal(t, tt.worker, gotWorker)
-
+			require.Equal(t, tt.worker, got)
 			err = s.Delete(ctx, tt.worker.TaskID)
 			require.NoErrorf(t, err, "failed to delete item from dynamodb: %v", err)
-			got, err = client.GetItem(ctx, &dynamodb.GetItemInput{
-				Key: map[string]types.AttributeValue{
-					"pk": &types.AttributeValueMemberS{
-						Value: tt.worker.TaskID,
-					},
-				},
-				TableName: aws.String(table),
-			})
-			require.NoErrorf(t, err, "failed to get item from dynamodb after delete: %v", err)
-			require.Equal(t, 0, len(got.Item))
+			_, err = s.GetWorker(ctx, tt.worker.TaskID)
+			require.Error(t, err)
+			require.ErrorContains(t, err, "no worker with matching taskID found")
 		})
 	}
 }
@@ -105,13 +86,13 @@ func setup(t *testing.T, ctx context.Context) (*dynamodb.Client, string, func())
 	_, err = client.CreateTable(ctx, &dynamodb.CreateTableInput{
 		AttributeDefinitions: []types.AttributeDefinition{
 			{
-				AttributeName: aws.String("pk"),
+				AttributeName: aws.String("taskID"),
 				AttributeType: "S",
 			},
 		},
 		KeySchema: []types.KeySchemaElement{
 			{
-				AttributeName: aws.String("pk"),
+				AttributeName: aws.String("taskID"),
 				KeyType:       types.KeyTypeHash,
 			},
 		},

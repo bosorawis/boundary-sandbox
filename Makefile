@@ -1,4 +1,4 @@
-build: clean build-worker-auth-watcher build-stopped-worker
+build: clean build-worker-auth-watcher build-worker_stop_watcher_zip
 
 clean:
 	rm -rf ./bin/
@@ -6,5 +6,5 @@ clean:
 build-worker-auth-watcher:
 	GOOS=linux GOARCH=amd64 go build -o ./bin/worker-auth-watcher ./lambda/worker-auth-watcher
 
-build-stopped-worker:
-	GOOS=linux GOARCH=amd64 go build -o ./bin/stopped-worker ./lambda/stopped-worker
+build-worker_stop_watcher_zip:
+	GOOS=linux GOARCH=amd64 go build -o ./bin/worker-stop-watcher ./lambda/worker-stop-watcher

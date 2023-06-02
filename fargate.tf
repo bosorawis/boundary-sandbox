@@ -108,3 +108,24 @@ resource "aws_cloudwatch_log_subscription_filter" "worker_auth_subscription" {
   destination_arn = aws_lambda_function.worker_auth_watcher_lambda.arn
 }
 
+
+resource "aws_cloudwatch_event_rule" "fargate_task_stopped" {
+  name          = "fargate-stop-task-watcher"
+  event_pattern = jsonencode({
+    source = [
+      "aws.ecs"
+    ]
+    detail-type = [
+      "ECS Task State Change"
+    ]
+    detail = {
+      lastStatus : ["STOPPED"]
+      clusterArn : [aws_ecs_cluster.boundary-worker-clusters.arn]
+    }
+  })
+}
+
+resource "aws_cloudwatch_event_target" "fargate_stop_event_lambda_target" {
+  arn  = aws_lambda_function.worker_stop_watcher_lambda.arn
+  rule = aws_cloudwatch_event_rule.fargate_task_stopped.name
+}
