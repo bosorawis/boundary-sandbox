@@ -46,6 +46,8 @@ make build
 
 ### Provision resource
 
+**Note**: This step and [Build and push container image](#Build-and-push-container-image) must back-to-back so don't look away!
+
 - run `terraform init`
 
 ```bash
@@ -85,11 +87,6 @@ docker push <ecr-repo-url>:latest
 6. Go to `Tasks` tab
 7. There should be 1 running task
 8. Optionally login to Boundary cluster under `Workers` tab and validate that there is now an active worker
-
-
-
-### Test Scaling
-
 
 
 ## Connect
