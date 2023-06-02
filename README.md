@@ -60,14 +60,19 @@ At this point, all resources are created in AWS; however, there's no available d
 To build and push the image, first find out what's the repository URL of the created ECR
 
 ```bash
+
+# fetch ECR repo URL
 terraform output 
-# ecr = "<account>>.dkr.ecr.us-west-2.amazonaws.com/boundary-worker"
+# ecr = "<account>.dkr.ecr.us-west-2.amazonaws.com/boundary-worker"
+
+# login to ECR
+aws ecr get-login-password --region <region> --profile <profile-name> | docker login --username AWS --password-stdin <ecr-repo-url>
 
 # build and push
 make docker
 
-docker tag boundary-worker:latest <repository-url>/boundary-worker:latest
-docker push <repository-url>/boundary-worker:latest
+docker tag boundary-worker:latest <ecr-repo-url>:latest
+docker push <ecr-repo-url>:latest
 ```
 
 ### Validate that the service is _up_

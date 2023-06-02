@@ -24,6 +24,14 @@ resource "aws_lambda_function" "worker_auth_watcher_lambda" {
   }
 }
 
+resource "aws_lambda_permission" "allow_cloudwatch" {
+  statement_id  = "AllowCloudwatchLogsInvokeLambda"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.worker_auth_watcher_lambda.function_name
+  principal     = "logs.${var.aws_region}.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_log_group.fargate_boundary_worker.arn}:*"
+}
+
 data "archive_file" "worker_stop_watcher_zip" {
   type        = "zip"
   source_file = "./bin/worker-stop-watcher"

@@ -131,6 +131,7 @@ resource "aws_cloudwatch_event_rule" "fargate_task_stopped" {
 }
 
 resource "aws_cloudwatch_event_target" "fargate_stop_event_lambda_target" {
+  depends_on = [aws_lambda_function.worker_stop_watcher_lambda]
   arn  = aws_lambda_function.worker_stop_watcher_lambda.arn
   rule = aws_cloudwatch_event_rule.fargate_task_stopped.name
 }
