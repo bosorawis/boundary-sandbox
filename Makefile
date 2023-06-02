@@ -12,7 +12,3 @@ build-worker_stop_watcher_zip:
 
 docker:
 	docker build --platform linux/amd64 -t boundary-worker .
-
-docker-push: docker
-	docker tag boundary-worker:latest 609442363224.dkr.ecr.us-west-2.amazonaws.com/boundary-worker:latest
-	docker push 609442363224.dkr.ecr.us-west-2.amazonaws.com/boundary-worker:latest

@@ -99,7 +99,7 @@ resource "aws_ecs_service" "boundary_worker" {
   task_definition         = aws_ecs_task_definition.boundary_worker_task_def.arn
   launch_type             = "FARGATE"
   enable_ecs_managed_tags = true
-  desired_count           = 1
+  desired_count           = var.worker_count
   network_configuration {
     subnets = [for s in aws_subnet.private : s.id]
   }

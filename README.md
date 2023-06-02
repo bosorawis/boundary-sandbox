@@ -36,16 +36,55 @@ aws_region = "us-west-2"
 availability_zones = ["us-west-2a", "us-west-2b"]
 ```
 
+
+### Build Lambda apps
+
+```bash
+make build
+```
+
+
 ### Provision resource
 
 - run `terraform init`
-
 
 ```bash
 terraform plan -var-file=envs/dev.tfvars
 terraform apply -var-file=envs/dev.tfvars
 # Follow the prompt
 ```
+
+### Build and push container image
+
+At this point, all resources are created in AWS; however, there's no available docker image for the `boundary-worker` yet.
+To build and push the image, first find out what's the repository URL of the created ECR
+
+```bash
+terraform output 
+# ecr = "<account>>.dkr.ecr.us-west-2.amazonaws.com/boundary-worker"
+
+# build and push
+make docker
+
+docker tag boundary-worker:latest <repository-url>/boundary-worker:latest
+docker push <repository-url>/boundary-worker:latest
+```
+
+### Validate that the service is _up_
+
+1. Login to AWS console
+2. Navigate to `Elastic Container Service`
+3. Navigate to `Clusters`
+4. Navigate to `boundary-worker-cluster`
+5. Click on `Services` tab and click into `boundary_worker`
+6. Go to `Tasks` tab
+7. There should be 1 running task
+8. Optionally login to Boundary cluster under `Workers` tab and validate that there is now an active worker
+
+
+
+### Test Scaling
+
 
 
 ## Connect
