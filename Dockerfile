@@ -11,11 +11,17 @@ RUN curl -o boundary-worker.zip https://releases.hashicorp.com/boundary-worker/0
 
 
 FROM alpine
-
-EXPOSE 9200
 WORKDIR /boundary
-
-COPY worker.hcl worker.hcl
 COPY --from=builder /boundary/boundary-worker boundary-worker
 
+RUN apk update && \
+        apk add curl jq
+
+EXPOSE 9200
+
+COPY worker.hcl worker.hcl
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["./boundary-worker", "server", "-config=./worker.hcl"]

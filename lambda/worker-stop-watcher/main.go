@@ -46,6 +46,7 @@ func (a *app) HandleRequest(ctx context.Context, event events.ECSContainerInstan
 		if err != nil {
 			return "", fmt.Errorf("failed to delete worker %v from storage: %w", w, err)
 		}
+		fmt.Printf("successfully clean up worker %v\n", w)
 	}
 	return "SUCCEED", nil
 }

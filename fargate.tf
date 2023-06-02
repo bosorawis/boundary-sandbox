@@ -69,6 +69,10 @@ resource "aws_ecs_task_definition" "boundary_worker_task_def" {
         {
           name  = "HCP_BOUNDARY_CLUSTER_ID"
           value = "${var.hcp_boundary_cluster_id}"
+        },
+        {
+          name : "ECS_ENABLE_CONTAINER_METADATA"
+          value : "true"
         }
       ]
       logConfiguration = {
